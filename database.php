@@ -31,4 +31,29 @@ class Database
             echo "<script type= 'text/javascript'>alert('Error: " . $sql . "<br>" . $conn->error . "');</script>";
         }
     }
+
+    public static function addToDatabase($url, $conn)
+    {
+        $sql = "INSERT INTO shopify (url)
+        VALUES ('" . $url . "')";
+
+        if ($conn->query($sql) === TRUE) {
+            echo "<br> New records created successfully </br>";
+        } else {
+            echo "<script type= 'text/javascript'>alert('Error: " . $sql . "<br>" . $conn->error . "');</script>";
+        }
+
+        $select = mysqli_query($conn, "SELECT DISTINCT * FROM shopify");
+        echo "<br><br> Websites using this app : <br>";
+        try {
+            while ($row = $select->fetch_row()) {
+                print_r($row[0]);
+                print_r("<br>");
+            }
+        } catch (Exception $exception) {
+            echo 'Error printing websites.';
+        }
+        $conn->close();
+
+    }
 }
