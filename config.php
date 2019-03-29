@@ -21,6 +21,13 @@ class Config
         return "Site name is not specified!";
     }
 
+    public static function getCode()
+    {
+        parse_str($_SERVER['QUERY_STRING'], $output);
+        $code = ($output['code']);
+        return $code;
+    }
+
     public static function deleteCookies()
     {
         if (isset($_SERVER['HTTP_COOKIE'])) {
