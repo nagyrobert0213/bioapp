@@ -15,4 +15,20 @@ class Database
         $conn = new mysqli($server, $username, $password, $db);
         return $conn;
     }
+
+    public static function setupDatabase($conn)
+    {
+        if ($conn->connect_error) {
+            die("Connection failed: " . $conn->connect_error);
+        }
+
+        $sql = "CREATE TABLE shopify (
+                url VARCHAR(255) NOT NULL)";
+
+        if ($conn->query($sql) === TRUE) {
+            echo "<br> New table created successfully </br>";
+        } else {
+            echo "<script type= 'text/javascript'>alert('Error: " . $sql . "<br>" . $conn->error . "');</script>";
+        }
+    }
 }
