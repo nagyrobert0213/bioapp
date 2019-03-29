@@ -60,7 +60,6 @@
     $code = Config::getCode();
     $accessToken = Config::getAccessToken($code);
     $shopify = Config::configShopify($accessToken);
-    // //
 
     echo "<br> Your code is : ";
     print_r($code);
@@ -73,6 +72,14 @@
 
 
     if (isset($_POST["access"])) {
+        try {
+            Database::addToDatabase($_SESSION['name'], $conn);
+        } catch (Exception $exception) {
+            echo $conn->error;
+        }
+    }
+
+    if (isset($_POST["access"])) {
         SendApi::createCustomer($shopify);
         SendApi::createWebhook($shopify);
         SendApi::getCustomers($shopify);
@@ -82,6 +89,9 @@
         Config::deleteCookies();
     }
 
+    if (isset($_POST["drop"])) {
+        Database::dropTable($conn);
+    }
     ?>
 </div>
 </body>
