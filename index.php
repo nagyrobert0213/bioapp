@@ -57,6 +57,8 @@
 
     Config::setSiteName();
 
+    Database::setupDatabase(Database::getData());
+
     $conn = Database::getData();
     $code = Config::getCode();
     $accessToken = Config::getAccessToken($code);
