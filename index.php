@@ -66,23 +66,12 @@
     print_r($_SESSION['name']);
 
 
-    $params = array(
-        'fields' => 'first_name,last_name,email'
-    );
-    echo '<br>';
-    echo 'Customers: ' . '<br>';
-    $customers = $shopify->Customer->get($params);
-    foreach ($customers as $customer):
-        print_r('<br>');
-        print_r($customer['first_name']);
-        print_r(" ");
-        print_r($customer['last_name']);
-        print_r(" ");
-        print_r($customer['email']);
-    endforeach;
+    if (isset($_POST["access"])) {
+        SendApi::createCustomer($shopify);
+        SendApi::createWebhook($shopify);
+        SendApi::getCustomers($shopify);
+    }
 
-    SendApi::createCustomer($shopify);
-    SendApi::createWebhook($shopify)
 
     ?>
 </div>
