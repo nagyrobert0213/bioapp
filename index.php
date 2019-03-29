@@ -43,14 +43,10 @@
 
     session_set_cookie_params(60, "/");
     session_start();
-    $accessToken = "";
 
 
-    if (!empty($_POST["sitename"])) {
-        $siteName = $_POST["sitename"];
-        $tempSiteName = strval($siteName);
-        $_SESSION['name'] = $tempSiteName;
-    }
+
+    Config::setSiteName();
 
     parse_str($_SERVER['QUERY_STRING'], $output);
     print_r('Your code is : ');
