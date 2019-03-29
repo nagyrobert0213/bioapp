@@ -40,8 +40,11 @@
 
     <?php
     require __DIR__ . '/vendor/autoload.php';
+    require __DIR__ . '/config.php';
+    require __DIR__ . '/sendapi.php';
+    require __DIR__ . '/database.php';
 
-    session_set_cookie_params(60, "/");
+    session_set_cookie_params(300, "/");
     session_start();
 
 
