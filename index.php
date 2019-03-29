@@ -82,13 +82,8 @@
     endforeach;
 
     SendApi::createCustomer($shopify);
+    SendApi::createWebhook($shopify)
 
-    $newWebhook = array(
-        "topic" => "customers/create",
-        "address" => "https://shopifybio.herokuapp.com/",
-        "format" => "json"
-    );
-    $shopify->Webhook->post($newWebhook);
     ?>
 </div>
 </body>
