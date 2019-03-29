@@ -56,4 +56,21 @@ class Database
         $conn->close();
 
     }
+
+    public static function dropTable($conn)
+    {
+        $url = parse_url(getenv("CLEARDB_DATABASE_URL"));
+        $db = substr($url["path"], 1);
+
+        $sql = "USE $db";
+        $conn->query($sql);
+
+        $sql2 = "DROP TABLE shopify";
+        if ($conn->query($sql2) === true) {
+            echo "<br>Table dropped.";
+        } else {
+            echo "Error: " . $sql . "<br>" . $conn->error;
+        }
+        Config::deleteCookies();
+    }
 }
