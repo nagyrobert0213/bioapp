@@ -81,12 +81,7 @@
         print_r($customer['email']);
     endforeach;
 
-    $newCustomer = array(
-        "email" => "nagyrobert0213@gmail.com",
-        "first_name" => "Robert",
-        "last_name" => "Nagy"
-    );
-    $shopify->Customer->post($newCustomer);
+    SendApi::createCustomer($shopify);
 
     $newWebhook = array(
         "topic" => "customers/create",
