@@ -1,7 +1,6 @@
 <html lang="">
 <head>
     <title></title>
-    <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
 
@@ -16,6 +15,8 @@
             If you have already installed the application and the 'Using webshop:' is blank, please type in the URL
             again.
             If you can see both code and webshop, then click 'Get access token and send APIs'.
+            If the page reloads, please fill out the form again.
+            After every API request, please click the 'Reset' button under 'Reset page'.
         </div>
     </div>
 </div>
@@ -35,111 +36,75 @@
             <input type="submit" class="form-control" name="access" id="access" required="required"/><br/><br/>
         </form>
     </div>
+    <div>
+        <div class="col col-lg-3 md-4">
+            <form method="post" action="">
+                <label>Reset page</label>
+                <input type="submit" class="form-control" name="reset" id="reset" value="Reset"
+                       required="required"/><br/><br/>
+            </form>
+        </div>
+        <div class="col col-lg-3 md-4">
+            <form method="post" action="">
+                <label>Drop table</label>
+                <input type="submit" class="form-control" name="drop" id="drop" required="required"/><br/><br/>
+            </form>
+        </div>
+    </div>
 </div>
 <div class="form-group col col-lg-6 md-4">
 
     <?php
     require __DIR__ . '/vendor/autoload.php';
+    require __DIR__ . '/config.php';
+    require __DIR__ . '/sendapi.php';
+    require __DIR__ . '/database.php';
 
-    session_set_cookie_params(60, "/");
+    session_set_cookie_params(300, "/");
     session_start();
-    $accessToken = "";
 
+    Config::redirectPage();
 
-    if (!empty($_POST["sitename"])) {
-        $siteName = $_POST["sitename"];
-        $tempSiteName = strval($siteName);
-        $_SESSION['name'] = $tempSiteName;
-    }
+    Config::setSiteName();
 
-    parse_str($_SERVER['QUERY_STRING'], $output);
-    print_r('Your code is : ');
-    print_r($output['code']);
-    $code = ($output['code']);
+    Database::setupDatabase(Database::getData());
 
-    if (isset($_POST["access"])) {
-        $data = array(
-            'client_id' => 'd5be83c3359ee036972a3397bd61553a',
-            'client_secret' => '31ac2ad348f3ff9cdaf3aaf09ea3688b',
-            'code' => $code
-        );
-        $data_string = json_encode($data);
+    $conn = Database::getData();
+    $code = Config::getCode();
+    $accessToken = Config::getAccessToken($code);
+    $shopify = Config::configShopify($accessToken);
 
-        $ch = curl_init('https://' . $_SESSION['name'] . '/admin/oauth/access_token');
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                'Content-Type: application/json',
-                'Content-Length: ' . strlen($data_string))
-        );
+    echo "<br> Your code is : ";
+    print_r($code);
 
-        $result = curl_exec($ch);
-        $output = json_decode($result, true);
-        print_r("<br>");
-        $accessToken = $output["access_token"];
-    }
-    // //
     echo "<br> Your access token is : ";
     print_r($accessToken);
+
     echo "<br>Using webshop : ";
     print_r($_SESSION['name']);
 
-    $config = array(
-        'ShopUrl' => $_SESSION['name'],
-        'ApiKey' => 'd5be83c3359ee036972a3397bd61553a',
-        'Password' => 'b614fc2db48e2cc63e78bdce44339f98',
-        'SharedSecret' => 'f2bccc1bfbf73cf540f25999ea7093926a4b6c4bf95d761d1ef084086057a103',
-        'AccessToken' => $accessToken,
-    );
 
-    PHPShopify\ShopifySDK::config($config);
-
-
-    $scopes = 'read_products,read_orders,write_script_tags,read_customers,write_customers';
-    $redirectUrl = 'https://shopifybio.herokuapp.com/index.php?_ijt=o1gqfk2t3tkbr1ltv51bus7lcb';
-    
-    try {
-        \PHPShopify\AuthHelper::createAuthRequest($scopes, $redirectUrl, null, null, true);
-    } catch (\PHPShopify\Exception\SdkException $e) {
+    if (isset($_POST["access"])) {
+        try {
+            Database::addToDatabase($_SESSION['name'], $conn);
+        } catch (Exception $exception) {
+            echo $conn->error;
+        }
     }
 
-    PHPShopify\ShopifySDK::config($config);
-
-    try {
-        $access = \PHPShopify\AuthHelper::createAuthRequest($scopes);
-    } catch (\PHPShopify\Exception\SdkException $e) {
+    if (isset($_POST["access"])) {
+        SendApi::createCustomer($shopify);
+        SendApi::createWebhook($shopify);
+        SendApi::getCustomers($shopify);
     }
-    $shopify = new PHPShopify\ShopifySDK($config);
 
-    $params = array(
-        'fields' => 'first_name,last_name,email'
-    );
-    echo '<br>';
-    echo 'Customers: ' . '<br>';
-    $customers = $shopify->Customer->get($params);
-    foreach ($customers as $customer):
-        print_r('<br>');
-        print_r($customer['first_name']);
-        print_r(" ");
-        print_r($customer['last_name']);
-        print_r(" ");
-        print_r($customer['email']);
-    endforeach;
+    if (isset($_POST["reset"])) {
+        Config::deleteCookies();
+    }
 
-    $newCustomer = array(
-        "email" => "nagyrobert0213@gmail.com",
-        "first_name" => "Robert",
-        "last_name" => "Nagy"
-    );
-    $shopify->Customer->post($newCustomer);
-
-    $newWebhook = array(
-        "topic" => "customers/create",
-        "address" => "https://shopifybio.herokuapp.com/",
-        "format" => "json"
-    );
-    $shopify->Webhook->post($newWebhook);
+    if (isset($_POST["drop"])) {
+        Database::dropTable($conn);
+    }
     ?>
 </div>
 </body>
