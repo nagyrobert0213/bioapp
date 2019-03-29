@@ -54,6 +54,7 @@
     session_set_cookie_params(300, "/");
     session_start();
 
+    Config::redirectPage();
 
     Config::setSiteName();
 
