@@ -53,38 +53,18 @@
 
     $code = Config::getCode();
     $accessToken = Config::getAccessToken($code);
+    $shopify = Config::configShopify($accessToken);
     // //
+
+    echo "<br> Your code is : ";
+    print_r($code);
+
     echo "<br> Your access token is : ";
     print_r($accessToken);
+
     echo "<br>Using webshop : ";
     print_r($_SESSION['name']);
 
-    $config = array(
-        'ShopUrl' => $_SESSION['name'],
-        'ApiKey' => 'd5be83c3359ee036972a3397bd61553a',
-        'Password' => 'b614fc2db48e2cc63e78bdce44339f98',
-        'SharedSecret' => 'f2bccc1bfbf73cf540f25999ea7093926a4b6c4bf95d761d1ef084086057a103',
-        'AccessToken' => $accessToken,
-    );
-
-    PHPShopify\ShopifySDK::config($config);
-
-
-    $scopes = 'read_products,read_orders,write_script_tags,read_customers,write_customers';
-    $redirectUrl = 'https://shopifybio.herokuapp.com/index.php?_ijt=o1gqfk2t3tkbr1ltv51bus7lcb';
-    
-    try {
-        \PHPShopify\AuthHelper::createAuthRequest($scopes, $redirectUrl, null, null, true);
-    } catch (\PHPShopify\Exception\SdkException $e) {
-    }
-
-    PHPShopify\ShopifySDK::config($config);
-
-    try {
-        $access = \PHPShopify\AuthHelper::createAuthRequest($scopes);
-    } catch (\PHPShopify\Exception\SdkException $e) {
-    }
-    $shopify = new PHPShopify\ShopifySDK($config);
 
     $params = array(
         'fields' => 'first_name,last_name,email'
