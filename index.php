@@ -35,6 +35,13 @@
             <input type="submit" class="form-control" name="access" id="access" required="required"/><br/><br/>
         </form>
     </div>
+    <div class="col col-lg-3 md-4">
+        <form method="post" action="">
+            <label>Reset page</label>
+            <input type="submit" class="form-control" name="reset" id="reset" value="Reset"
+                   required="required"/><br/><br/>
+        </form>
+    </div>
 </div>
 <div class="form-group col col-lg-6 md-4">
 
@@ -46,7 +53,6 @@
 
     session_set_cookie_params(300, "/");
     session_start();
-
 
 
     Config::setSiteName();
@@ -72,6 +78,9 @@
         SendApi::getCustomers($shopify);
     }
 
+    if (isset($_POST["reset"])) {
+        Config::deleteCookies();
+    }
 
     ?>
 </div>
