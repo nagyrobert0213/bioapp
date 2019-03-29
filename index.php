@@ -51,10 +51,7 @@
 
     Config::setSiteName();
 
-    parse_str($_SERVER['QUERY_STRING'], $output);
-    print_r('Your code is : ');
-    print_r($output['code']);
-    $code = ($output['code']);
+    $code = Config::getCode();
 
     if (isset($_POST["access"])) {
         $data = array(
