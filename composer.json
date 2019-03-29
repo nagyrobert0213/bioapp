@@ -1,0 +1,8 @@
+{
+    "require": {
+        "phpclassic/php-shopify": "^1.0",
+      "ext-json": "*",
+        "luketowers/php-shopify-api": "dev-master",
+      "ext-curl": "*"
+    }
+}
