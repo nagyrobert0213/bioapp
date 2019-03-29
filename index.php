@@ -1,7 +1,6 @@
 <html lang="">
 <head>
     <title></title>
-    <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
 
@@ -16,6 +15,8 @@
             If you have already installed the application and the 'Using webshop:' is blank, please type in the URL
             again.
             If you can see both code and webshop, then click 'Get access token and send APIs'.
+            If the page reloads, please fill out the form again.
+            After every API request, please click the 'Reset' button under 'Reset page'.
         </div>
     </div>
 </div>
@@ -35,12 +36,20 @@
             <input type="submit" class="form-control" name="access" id="access" required="required"/><br/><br/>
         </form>
     </div>
-    <div class="col col-lg-3 md-4">
-        <form method="post" action="">
-            <label>Reset page</label>
-            <input type="submit" class="form-control" name="reset" id="reset" value="Reset"
-                   required="required"/><br/><br/>
-        </form>
+    <div>
+        <div class="col col-lg-3 md-4">
+            <form method="post" action="">
+                <label>Reset page</label>
+                <input type="submit" class="form-control" name="reset" id="reset" value="Reset"
+                       required="required"/><br/><br/>
+            </form>
+        </div>
+        <div class="col col-lg-3 md-4">
+            <form method="post" action="">
+                <label>Drop table</label>
+                <input type="submit" class="form-control" name="drop" id="drop" required="required"/><br/><br/>
+            </form>
+        </div>
     </div>
 </div>
 <div class="form-group col col-lg-6 md-4">
