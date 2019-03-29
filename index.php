@@ -57,6 +57,7 @@
 
     Config::setSiteName();
 
+    $conn = Database::getData();
     $code = Config::getCode();
     $accessToken = Config::getAccessToken($code);
     $shopify = Config::configShopify($accessToken);
