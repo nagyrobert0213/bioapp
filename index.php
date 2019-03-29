@@ -52,29 +52,7 @@
     Config::setSiteName();
 
     $code = Config::getCode();
-
-    if (isset($_POST["access"])) {
-        $data = array(
-            'client_id' => 'd5be83c3359ee036972a3397bd61553a',
-            'client_secret' => '31ac2ad348f3ff9cdaf3aaf09ea3688b',
-            'code' => $code
-        );
-        $data_string = json_encode($data);
-
-        $ch = curl_init('https://' . $_SESSION['name'] . '/admin/oauth/access_token');
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                'Content-Type: application/json',
-                'Content-Length: ' . strlen($data_string))
-        );
-
-        $result = curl_exec($ch);
-        $output = json_decode($result, true);
-        print_r("<br>");
-        $accessToken = $output["access_token"];
-    }
+    $accessToken = Config::getAccessToken($code);
     // //
     echo "<br> Your access token is : ";
     print_r($accessToken);
